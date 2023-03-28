@@ -1,23 +1,43 @@
-import logo from './logo.svg'
-import './App.css'
+import Header from './Header'
+import { useState, useEffect } from 'react'
+import List from './List'
 
 function App() {
+	const API_URL = 'https://jsonplaceholder.typicode.com/'
+	const [reqType, setReqType] = useState('users')
+	const [items, setItems] = useState([])
+	const [error, setError] = useState(null)
+	const [isLoading, setIsLoading] = useState(true)
+
+	useEffect(() => {
+		async function fetchData(reqType) {
+			try {
+				const res = await fetch(API_URL + reqType)
+				const data = await res.json()
+				if (!res.ok) throw Error('Unable to fetch')
+				setItems([data])
+				setError(null)
+			} catch (err) {
+				setError(err.message)
+			} finally {
+				setIsLoading(false)
+			}
+		}
+		fetchData(reqType)
+	}, [reqType])
+
 	return (
 		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/App.js</code> and save to reload.
-				</p>
-				<a
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn React
-				</a>
-			</header>
+			<Header reqType={reqType} setReqType={setReqType} />
+			<main>
+				{isLoading ? (
+					<p className="error-message">Loading...</p>
+				) : !error ? (
+					<List items={items} />
+				) : (
+					<p className="error-message">Error Loading the Items</p>
+				)}
+			</main>
 		</div>
 	)
 }
