@@ -1,6 +1,6 @@
 import Header from './Header'
 import { useState, useEffect } from 'react'
-import List from './List'
+import Table from './Table'
 
 function App() {
 	const API_URL = 'https://jsonplaceholder.typicode.com/'
@@ -33,7 +33,7 @@ function App() {
 				{isLoading ? (
 					<p className="error-message">Loading...</p>
 				) : !error ? (
-					<List items={items} />
+					<Table items={items} />
 				) : (
 					<p className="error-message">Error Loading the Items</p>
 				)}
